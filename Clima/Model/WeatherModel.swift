@@ -8,6 +8,11 @@
 
 import Foundation
 
+protocol WeatherManagerDelegate {
+    func updateWeather(_ weatherModel: WeatherModel)
+    func handleError(_ error: Error)
+}
+
 struct WeatherModel {
     let cityName: String
     let conditionId: Int
