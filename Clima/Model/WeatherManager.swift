@@ -2,77 +2,60 @@
 //  WeatherManager.swift
 //  Clima
 //
-//  Created by OmarAssidi on 19/10/2023.
-//  Copyright © 2023 App Brewery. All rights reserved.
+//  Created by Omar Assidi on 05/12/2024.
+//  Copyright © 2024 App Brewery. All rights reserved.
 //
 
 import Foundation
 
 struct WeatherManager {
-    let baseUrl = "https://api.openweathermap.org/data/2.5/weather"
-    
-    let apiKey = "74b9d9d431c55478190befba856c97a0"
-    
-    let unit = "metric"
-    
-    let lat = "lat"
-    
-    let lon = "lon"
-    
     var delegate: WeatherManagerDelegate?
+    let weatherUrl = "https://api.openweathermap.org/data/2.5/weather?appid=74b9d9d431c55478190befba856c97a0&units=metric"
     
-    func fetchWeatherFor(city: String) {
-        let url = "\(baseUrl)?q=\(city)&units=\(unit)&appid=\(apiKey)"
-        performRequest(url)
+    func fetchWeather(cityName: String) {
+        let urlString = "\(weatherUrl)&q=\(cityName)"
+        performRequest(with: urlString)
+        
     }
     
-    func fetchWeatherBy(lat: Double, lon: Double) {
-        let url = "\(baseUrl)?lat=\(lat)&lon=\(lon)&units=\(unit)&appid=\(apiKey)"
-        performRequest(url)
+    func fetchWeather(latitude: Double, longtitude: Double) {
+        let url = "\(weatherUrl)&lat=\(latitude)&lon=\(longtitude)"
+        performRequest(with: url)
     }
     
-    private func performRequest(_ url: String) {
-        // 1- Create URL
-        guard let urlObject = URL(string: url) else {return}
-        
-        // 2- Create URL Session
-        let session = URLSession(configuration: .default)
-        
-        // 3- Give the URL Session a task
-        let task =  session.dataTask(with: urlObject) { data , response, error in
-            
-            if error != nil {
-                delegate?.handleError(error!)
-                return
-            }
-            
-            if let safeData = data {
-                if let weather = self.parseJson(safeData) {
-                   delegate?.updateWeather(weather)
+    private func performRequest(with urlString: String) {
+        if let url = URL(string: urlString) {
+            let sesssion = URLSession(configuration: .default)
+            let task = sesssion.dataTask(with: url) {(data, response, error) in
+                if error != nil {
+                    delegate?.didFailWithError(self, error: error!)
+                    return
+                }
+                if let safeData = data {
+                    if let weather = parseJson(safeData) {
+                        delegate?.didUpdateWeather(self, weather: weather)
+                    }
                 }
             }
-        
-            
+            delegate?.didStartFetching(self)
+            task.resume()
         }
-        
-        // 4- Start the taks
-        task.resume()
     }
     
-    private func parseJson(_ data: Data) -> WeatherModel? {
+    
+    func parseJson(_ data: Data) -> WeatherModel? {
         let decoder = JSONDecoder()
         do {
-             let result = try decoder.decode(WeatherData.self, from: data)
-            let weather = WeatherModel(cityName: result.name, conditionId: result.weather.first?.id ?? 200, temperature: result.main.temp)
+            let weatherData = try decoder.decode(WeatherData.self, from: data)
+            guard let id = weatherData.weather.first?.id else { return nil }
+            let name = weatherData.name
+            let temp = weatherData.main.temp
+            let weather = WeatherModel(conditionId: id, temperature: temp, name: name)
             return weather
-            
         } catch {
-            delegate?.handleError(error)
+            self.delegate?.didFailWithError(self, error: error)
             return nil
         }
-       
     }
-    
-    
-    
 }
+
