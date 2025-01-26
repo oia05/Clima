@@ -12,6 +12,11 @@ struct WeatherData: Decodable {
     let name: String
     let main: Main
     let weather: [Weather]
+    
+    func mapResponse() -> WeatherModel {
+        let conditionId = weather.first?.id
+        return WeatherModel(conditionId: conditionId, temperature: main.temp, name: name)
+    }
 }
 
 struct Main: Decodable {

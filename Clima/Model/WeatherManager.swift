@@ -7,55 +7,80 @@
 //
 
 import Foundation
+import Combine
 
-struct WeatherManager {
+class WeatherManager {
     var delegate: WeatherManagerDelegate?
-    let weatherUrl = "https://api.openweathermap.org/data/2.5/weather?appid=74b9d9d431c55478190befba856c97a0&units=metric"
+    let repository: ClimaRepository = ClimaRepository()
+    private var _uiState: CurrentValueSubject = CurrentValueSubject<UiState, Never>( UiState(isLoading: false, weatherModel: nil))
+    var uiState: AnyPublisher<UiState, Never> {
+        _uiState.eraseToAnyPublisher()
+    }
+    
+    
+    private var _effect = PassthroughSubject<String?, Never>()
+    var effect: AnyPublisher<String?, Never> {
+        _effect.eraseToAnyPublisher()
+    }
     
     func fetchWeather(cityName: String) {
-        let urlString = "\(weatherUrl)&q=\(cityName)"
-        performRequest(with: urlString)
+        Task { @MainActor in 
+            do {
+                setState { state in
+                    state.copy(isLoading: true)
+                }
+                let model = try await repository.fetchWeather(cityName: cityName)
+                setState { state in
+                    state.copy(isLoading: false, weatherModel: model)
+                }
+            } catch {
+                setState { state in
+                    state.copy(isLoading: false)
+                }
+                _effect.send(error.localizedDescription)
+            }
+        }
         
     }
     
     func fetchWeather(latitude: Double, longtitude: Double) {
-        let url = "\(weatherUrl)&lat=\(latitude)&lon=\(longtitude)"
-        performRequest(with: url)
-    }
-    
-    private func performRequest(with urlString: String) {
-        if let url = URL(string: urlString) {
-            let sesssion = URLSession(configuration: .default)
-            let task = sesssion.dataTask(with: url) {(data, response, error) in
-                if error != nil {
-                    delegate?.didFailWithError(self, error: error!)
-                    return
+      Task { @MainActor in
+            do {
+                setState { state in
+                    state.copy(isLoading: true)
                 }
-                if let safeData = data {
-                    if let weather = parseJson(safeData) {
-                        delegate?.didUpdateWeather(self, weather: weather)
-                    }
+                let model = try await repository.fetchWeather(latitude: latitude, longtitude: longtitude)
+                setState { state in
+                    state.copy(isLoading: false, weatherModel: model)
                 }
+            } catch {
+                sendEffect(errorMessage: (error.localizedDescription))
             }
-            delegate?.didStartFetching(self)
-            task.resume()
         }
     }
     
+    func setState(changes: (UiState) -> UiState) {
+        _uiState.send(changes(_uiState.value))
+    }
     
-    func parseJson(_ data: Data) -> WeatherModel? {
-        let decoder = JSONDecoder()
-        do {
-            let weatherData = try decoder.decode(WeatherData.self, from: data)
-            guard let id = weatherData.weather.first?.id else { return nil }
-            let name = weatherData.name
-            let temp = weatherData.main.temp
-            let weather = WeatherModel(conditionId: id, temperature: temp, name: name)
-            return weather
-        } catch {
-            self.delegate?.didFailWithError(self, error: error)
-            return nil
-        }
+    func sendEffect(errorMessage: String) {
+        _effect.send(errorMessage)
     }
 }
 
+protocol ErrorMapper {
+    func mapError(from: Data) -> LocalizedError
+}
+
+struct ClimaErrorMapper: ErrorMapper {
+    func mapError(from data: Data) -> LocalizedError {
+        return AppError.unkownError
+    }
+}
+
+
+enum AppError: LocalizedError {
+    case networkError
+    case unkownError
+    
+}

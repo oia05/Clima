@@ -8,85 +8,86 @@
 
 import UIKit
 import CoreLocation
+import Combine
 
 
 class WeatherViewController: UIViewController {
-    @IBOutlet weak var conditionImageView: UIImageView!
-    @IBOutlet weak var cityLabel: UILabel!
-    @IBOutlet weak var temparatureLabel: UILabel!
-    @IBOutlet weak var searchTextField: UITextField!
-    @IBOutlet weak var contentStackView: UIStackView!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    
     private var weatherManager = WeatherManager()
     private var locationManager = CLLocationManager()
+    private var cancellables = Set<AnyCancellable>()
+    private let viewModel: WeatherManager
+    private lazy var weatherView = WeatherView(frame: UIScreen.main.bounds)
+    var coordinator: MainCoordinator?
+    
+    init(viewModel: WeatherManager) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func loadView() {
+        view = weatherView
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        searchTextField.delegate = self
-        weatherManager.delegate = self
         locationManager.delegate = self
+        weatherView.searchTextField.delegate = self
+        handleState()
+        handleEffect()
+        setClickListeners()
         locationManager.requestWhenInUseAuthorization()
+        navigationController?.isNavigationBarHidden = true
     }
     
-    @IBAction func locationButtonPressed(_ sender: UIButton) {
+    
+    @objc func locationButtonPressed() {
         locationManager.requestLocation()
     }
-    @IBAction func searchPressed(_ sender: UIButton) {
-        searchTextField.endEditing(true)
+    
+    @objc func searchPressed() {
+        weatherView.searchTextField.endEditing(true)
     }
     
-}
-
-// MARK: - UITextFieldDelegate
-extension WeatherViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.endEditing(true)
-        return true
-    }
-        
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        let text = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
-        let isEmpty = text?.isEmpty ?? true
-        if isEmpty {
-            textField.text = ""
-            textField.placeholder = "Enter a city"
-        }
-        return !isEmpty
+    private func setClickListeners() {
+        weatherView.locationButton.addTarget(self, action: #selector(locationButtonPressed) , for: .touchUpInside)
+        weatherView.searchButton.addTarget(self, action: #selector(searchPressed) , for: .touchUpInside)
     }
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        if let cityName = textField.text {
-            weatherManager.fetchWeather(cityName: cityName)
-        }
-        textField.placeholder = "Search by city"
-        textField.text = ""
+    private func handleState() {
+        weatherManager.uiState.sink { [weak self] newState in
+            self?.handleState(newState)
+        }.store(in: &cancellables)
     }
-}
-
-// MARK: - WeatherManagerDelegate
-extension WeatherViewController: WeatherManagerDelegate {
-    func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
-        DispatchQueue.main.async {
-            self.contentStackView.isHidden = false
-            self.activityIndicator.isHidden = true
-            let temp = String(format: "%.1f", weather.temperature)
+    
+    private func handleEffect() {
+        weatherManager.effect.sink { [weak self] errorMessage in
+            self?.handleEffect(errorMessage: errorMessage)
+        }.store(in: &cancellables)
+    }
+    
+    private func handleState(_ uiState: UiState) {
+        weatherView.uiActivityIndicatorView.isHidden = !uiState.isLoading
+        weatherView.contentStackView.isHidden = uiState.isLoading
+        if let weatherModel = uiState.weatherModel {
+            let temp = String(format: "%.1f", weatherModel.temperature)
             let tempDegree = "\(temp)°"
-            self.temparatureLabel.text = tempDegree
-            self.cityLabel.text = weather.name
-            self.conditionImageView.image = UIImage(systemName: weather.condition.rawValue)
+            weatherView.temperatureLabel.text = tempDegree
+            weatherView.cityLabel.text = weatherModel.name
+            weatherView.conditionImageView.image = UIImage(systemName: weatherModel.condition.rawValue)
         }
     }
     
-    func didFailWithError(_ weatherManager: WeatherManager, error: Error) {
-        DispatchQueue.main.async {
-            self.activityIndicator.isHidden = true
-            print(error)
-        }
-    }
-    
-    func didStartFetching(_ weatherManager: WeatherManager) {
-        DispatchQueue.main.async {
-            self.activityIndicator.isHidden = false
+    private func handleEffect(errorMessage: String?) {
+        if errorMessage != nil {
+            let alert = UIAlertController(title: "Error", message: "Error loading weather", preferredStyle: .alert)
+            alert.title = "Error"
+            alert.addAction(UIAlertAction(title: "Ok", style: .default) { action in
+            })
+            present(alert, animated: true)
+            print("Error loading weather: \(errorMessage!))")
         }
     }
     
@@ -109,5 +110,31 @@ extension WeatherViewController: CLLocationManagerDelegate {
         if status == .authorizedWhenInUse {
             locationManager.requestLocation()
         }
+    }
+}
+
+// MARK: - UITextFieldDelegate
+extension WeatherViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.endEditing(true)
+        return true
+    }
+    
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        let text = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let isEmpty = text?.isEmpty ?? true
+        if isEmpty {
+            textField.text = ""
+            textField.placeholder = "Enter a city"
+        }
+        return !isEmpty
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if let cityName = textField.text {
+            weatherManager.fetchWeather(cityName: cityName)
+        }
+        textField.placeholder = "Search by city"
+        textField.text = ""
     }
 }

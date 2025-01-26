@@ -6,27 +6,31 @@
 //  Copyright © 2024 App Brewery. All rights reserved.
 //
 
-struct WeatherModel {
-    let conditionId: Int
+struct WeatherModel: Decodable {
+    let conditionId: Int?
     let temperature: Double
     let name: String
     var condition: WeatherCondition {
-        switch conditionId {
-        case 200...232:
-            return .thunderstorm
-        case 300...321:
-            return .drizzle
-        case 500...531:
-            return .rain
-        case 600...622:
-            return .snow
-        case 701...781:
-            return .mist
-        case 800:
-            return .clear
-        case 801...804:
-            return .clouds
-        default:
+        if let conditionId = conditionId {
+            switch conditionId {
+            case 200...232:
+                return .thunderstorm
+            case 300...321:
+                return .drizzle
+            case 500...531:
+                return .rain
+            case 600...622:
+                return .snow
+            case 701...781:
+                return .mist
+            case 800:
+                return .clear
+            case 801...804:
+                return .clouds
+            default:
+                return .unkown
+            }
+        } else {
             return .unkown
         }
     }
