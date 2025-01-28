@@ -16,54 +16,19 @@ protocol ClimaRepositoryProtocol {
 
 
 class ClimaRepository: ClimaRepositoryProtocol {
-    let weatherUrl = "https://api.openweathermap.org/data/2.5/weather?appid=74b9d9d431c55478190befba856c97a0&units=metric"
+    let apiService: ApiService
+    
+    init(apiService: ApiService) {
+        self.apiService = apiService
+    }
     
     func fetchWeather(cityName: String) async throws -> WeatherModel {
-        let urlString = "\(weatherUrl)&q=\(cityName)"
-        if let url = URL(string: urlString) {
-            let data: WeatherData = try await request(url: url, errorMapper: ClimaErrorMapper())
-            return data.mapResponse()
-        } else {
-            throw NSError(domain: "", code: 0, userInfo: nil)
-        }
+        let data: WeatherData = try await apiService.performApi(endPoint: WeatherDataSource.getWeather(cityName: cityName), errorMapper: ClimaErrorMapper())
+        return data.mapResponse()
     }
     
     func fetchWeather(latitude: Double, longtitude: Double) async throws -> WeatherModel {
-        let urlString = "\(weatherUrl)&lat=\(latitude)&lon=\(longtitude)"
-        if let url = URL(string: urlString) {
-            let data: WeatherData = try await request(url: url, errorMapper: ClimaErrorMapper())
-            return data.mapResponse()
-        } else {
-            throw NSError(domain: "", code: 0, userInfo: nil)
-        }
-    }
-    
-    private func parseJson<T: Decodable>(_ data: Data) throws -> T {
-        let decoder = JSONDecoder()
-        let response = try decoder.decode(T.self, from: data)
-        return response
-    }
-    
-    func request<T: Decodable>(url: URL, errorMapper: ErrorMapper) async throws -> T {
-        do {
-            let (data, response) = try await URLSession.shared.data(from: url)
-            if (response as? HTTPURLResponse)?.isSuccessfull() ?? false {
-                return try parseJson(data)
-            } else {
-                throw errorMapper.mapError(from: data)
-            }
-        } catch {
-            if (error as NSError).code == NSURLErrorNotConnectedToInternet {
-                throw AppError.networkError
-            } else {
-                throw error
-            }
-        }
-    }
-}
-
-extension HTTPURLResponse {
-    func isSuccessfull() -> Bool {
-        return (statusCode >= 200 && statusCode < 300)
+        let data: WeatherData = try await apiService.performApi(endPoint: WeatherDataSource.getWeatherByCoordinate(latitude: latitude, longitude: longtitude), errorMapper: ClimaErrorMapper())
+        return data.mapResponse()
     }
 }

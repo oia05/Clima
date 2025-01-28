@@ -9,10 +9,12 @@
 import Foundation
 import Combine
 
-class WeatherManager {
-    var delegate: WeatherManagerDelegate?
-    let repository: ClimaRepository = ClimaRepository()
-    private var _uiState: CurrentValueSubject = CurrentValueSubject<UiState, Never>( UiState(isLoading: false, weatherModel: nil))
+class WeatherViewModel {
+    let repository: ClimaRepositoryProtocol!
+    init(repository: ClimaRepositoryProtocol) {
+        self.repository = repository
+    }
+    private var _uiState: CurrentValueSubject = CurrentValueSubject<UiState, Never>( UiState(isLoading: true, weatherModel: nil))
     var uiState: AnyPublisher<UiState, Never> {
         _uiState.eraseToAnyPublisher()
     }

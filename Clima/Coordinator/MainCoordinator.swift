@@ -13,12 +13,9 @@ class MainCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     var onComplete: (() -> Void)?
     func start() {
-        let vm = WeatherManager()
-        let vc = WeatherViewController(viewModel: vm)
+        let vc = ViewControllerFactory.getWeatherViewController()
         vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)
-        
-        
     }
     
     func getNavigationBarAppearance() -> UINavigationBarAppearance {

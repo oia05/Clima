@@ -12,15 +12,15 @@ import Combine
 
 
 class WeatherViewController: UIViewController {
-    private var weatherManager = WeatherManager()
-    private var locationManager = CLLocationManager()
+    private var weatherViewModel: WeatherViewModel
+    private var locationManager: CLLocationManager
     private var cancellables = Set<AnyCancellable>()
-    private let viewModel: WeatherManager
     private lazy var weatherView = WeatherView(frame: UIScreen.main.bounds)
     var coordinator: MainCoordinator?
     
-    init(viewModel: WeatherManager) {
-        self.viewModel = viewModel
+    init(viewModel: WeatherViewModel, locationManager: CLLocationManager) {
+        self.weatherViewModel = viewModel
+        self.locationManager = locationManager
         super.init(nibName: nil, bundle: nil)
     }
     required init?(coder: NSCoder) {
@@ -57,19 +57,24 @@ class WeatherViewController: UIViewController {
     }
     
     private func handleState() {
-        weatherManager.uiState.sink { [weak self] newState in
+        weatherViewModel.uiState.sink { [weak self] newState in
             self?.handleState(newState)
         }.store(in: &cancellables)
     }
     
     private func handleEffect() {
-        weatherManager.effect.sink { [weak self] errorMessage in
+        weatherViewModel.effect.sink { [weak self] errorMessage in
             self?.handleEffect(errorMessage: errorMessage)
         }.store(in: &cancellables)
     }
     
     private func handleState(_ uiState: UiState) {
         weatherView.uiActivityIndicatorView.isHidden = !uiState.isLoading
+        if uiState.isLoading {
+            weatherView.uiActivityIndicatorView.startAnimating()
+        } else {
+            weatherView.uiActivityIndicatorView.stopAnimating()
+        }
         weatherView.contentStackView.isHidden = uiState.isLoading
         if let weatherModel = uiState.weatherModel {
             let temp = String(format: "%.1f", weatherModel.temperature)
@@ -100,7 +105,7 @@ extension WeatherViewController: CLLocationManagerDelegate {
         manager.stopUpdatingLocation()
         let lat = location.coordinate.latitude
         let lon = location.coordinate.longitude
-        weatherManager.fetchWeather(latitude: lat, longtitude: lon)
+        weatherViewModel.fetchWeather(latitude: lat, longtitude: lon)
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
         print("Error while getting the location: \(error)")
@@ -132,7 +137,7 @@ extension WeatherViewController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         if let cityName = textField.text {
-            weatherManager.fetchWeather(cityName: cityName)
+            weatherViewModel.fetchWeather(cityName: cityName)
         }
         textField.placeholder = "Search by city"
         textField.text = ""
