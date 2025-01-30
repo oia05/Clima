@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -23,16 +23,16 @@
 		E5906E0D2D46CFAA0078360E /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E0C2D46CFA70078360E /* Coordinator.swift */; };
 		E5906E0F2D46CFDE0078360E /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E0E2D46CFDE0078360E /* MainCoordinator.swift */; };
 		E5906E112D46D0710078360E /* UINavigationController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E102D46D0670078360E /* UINavigationController+Extensions.swift */; };
-		E5906E162D497BB90078360E /* ViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E152D497BAE0078360E /* ViewControllerFactory.swift */; };
-		E5906E182D497BCE0078360E /* ViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E172D497BC70078360E /* ViewModelFactory.swift */; };
-		E5906E1A2D497BE80078360E /* RepositoryFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E192D497BE20078360E /* RepositoryFactory.swift */; };
+		E5906E182D497BCE0078360E /* ViewModelModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E172D497BC70078360E /* ViewModelModule.swift */; };
+		E5906E1A2D497BE80078360E /* RepositoryModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E192D497BE20078360E /* RepositoryModule.swift */; };
 		E5906E1E2D4987550078360E /* ApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E1D2D4987510078360E /* ApiService.swift */; };
 		E5906E202D4989D00078360E /* ClimaDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E1F2D4989CA0078360E /* ClimaDataSource.swift */; };
-		E5906E222D4992560078360E /* ApiServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E212D4992500078360E /* ApiServiceFactory.swift */; };
 		E5906E252D4992680078360E /* ClimaApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E242D4992620078360E /* ClimaApiService.swift */; };
 		E5906E272D4993680078360E /* JsonParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E262D4993630078360E /* JsonParser.swift */; };
 		E5906E292D49939E0078360E /* ClimaJsonParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E282D49939A0078360E /* ClimaJsonParser.swift */; };
-		E5906E2B2D49949A0078360E /* JsonParserFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E2A2D4994940078360E /* JsonParserFactory.swift */; };
+		E5906E2E2D4C1A7B0078360E /* Factory in Frameworks */ = {isa = PBXBuildFile; productRef = E5906E2D2D4C1A7B0078360E /* Factory */; };
+		E5906E302D4C1B120078360E /* NetworkModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E2F2D4C1B010078360E /* NetworkModule.swift */; };
+		E5906E332D4C235D0078360E /* UtilsModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5906E322D4C23570078360E /* UtilsModule.swift */; };
 		E59915622D0104DE00C0C00E /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59915612D0104D700C0C00E /* WeatherViewModel.swift */; };
 		E59915642D03C57600C0C00E /* WeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59915632D03C57600C0C00E /* WeatherData.swift */; };
 		E5BB00382D078CEC0033EEEE /* WeatherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5BB00372D078CE80033EEEE /* WeatherModel.swift */; };
@@ -57,16 +57,15 @@
 		E5906E0C2D46CFA70078360E /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		E5906E0E2D46CFDE0078360E /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
 		E5906E102D46D0670078360E /* UINavigationController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Extensions.swift"; sourceTree = "<group>"; };
-		E5906E152D497BAE0078360E /* ViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerFactory.swift; sourceTree = "<group>"; };
-		E5906E172D497BC70078360E /* ViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelFactory.swift; sourceTree = "<group>"; };
-		E5906E192D497BE20078360E /* RepositoryFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryFactory.swift; sourceTree = "<group>"; };
+		E5906E172D497BC70078360E /* ViewModelModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelModule.swift; sourceTree = "<group>"; };
+		E5906E192D497BE20078360E /* RepositoryModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryModule.swift; sourceTree = "<group>"; };
 		E5906E1D2D4987510078360E /* ApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiService.swift; sourceTree = "<group>"; };
 		E5906E1F2D4989CA0078360E /* ClimaDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClimaDataSource.swift; sourceTree = "<group>"; };
-		E5906E212D4992500078360E /* ApiServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiServiceFactory.swift; sourceTree = "<group>"; };
 		E5906E242D4992620078360E /* ClimaApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClimaApiService.swift; sourceTree = "<group>"; };
 		E5906E262D4993630078360E /* JsonParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonParser.swift; sourceTree = "<group>"; };
 		E5906E282D49939A0078360E /* ClimaJsonParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClimaJsonParser.swift; sourceTree = "<group>"; };
-		E5906E2A2D4994940078360E /* JsonParserFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonParserFactory.swift; sourceTree = "<group>"; };
+		E5906E2F2D4C1B010078360E /* NetworkModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkModule.swift; sourceTree = "<group>"; };
+		E5906E322D4C23570078360E /* UtilsModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilsModule.swift; sourceTree = "<group>"; };
 		E59915612D0104D700C0C00E /* WeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherViewModel.swift; sourceTree = "<group>"; };
 		E59915632D03C57600C0C00E /* WeatherData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherData.swift; sourceTree = "<group>"; };
 		E5BB00372D078CE80033EEEE /* WeatherModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherModel.swift; sourceTree = "<group>"; };
@@ -77,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E5906E2E2D4C1A7B0078360E /* Factory in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -172,11 +172,10 @@
 		E5906E142D497BA80078360E /* di */ = {
 			isa = PBXGroup;
 			children = (
-				E5906E2A2D4994940078360E /* JsonParserFactory.swift */,
-				E5906E212D4992500078360E /* ApiServiceFactory.swift */,
-				E5906E192D497BE20078360E /* RepositoryFactory.swift */,
-				E5906E172D497BC70078360E /* ViewModelFactory.swift */,
-				E5906E152D497BAE0078360E /* ViewControllerFactory.swift */,
+				E5906E322D4C23570078360E /* UtilsModule.swift */,
+				E5906E2F2D4C1B010078360E /* NetworkModule.swift */,
+				E5906E192D497BE20078360E /* RepositoryModule.swift */,
+				E5906E172D497BC70078360E /* ViewModelModule.swift */,
 			);
 			path = di;
 			sourceTree = "<group>";
@@ -237,6 +236,9 @@
 				ar,
 			);
 			mainGroup = ADAA27A4231BBFAF00365194;
+			packageReferences = (
+				E5906E2C2D4C1A7B0078360E /* XCRemoteSwiftPackageReference "Factory" */,
+			);
 			productRefGroup = ADAA27AE231BBFAF00365194 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -266,8 +268,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADAA27B5231BBFAF00365194 /* WeatherViewController.swift in Sources */,
-				E5906E182D497BCE0078360E /* ViewModelFactory.swift in Sources */,
+				E5906E182D497BCE0078360E /* ViewModelModule.swift in Sources */,
 				E59915642D03C57600C0C00E /* WeatherData.swift in Sources */,
+				E5906E332D4C235D0078360E /* UtilsModule.swift in Sources */,
 				ADAA27B1231BBFAF00365194 /* AppDelegate.swift in Sources */,
 				E59915622D0104DE00C0C00E /* WeatherViewModel.swift in Sources */,
 				E5906E072D46BC6C0078360E /* UIImage+Extensions.swift in Sources */,
@@ -279,14 +282,12 @@
 				E5BB00382D078CEC0033EEEE /* WeatherModel.swift in Sources */,
 				E5906E052D46BAC40078360E /* WeatherView.swift in Sources */,
 				E5906E092D46BDA90078360E /* UIColor+Extensions.swift in Sources */,
-				E5906E1A2D497BE80078360E /* RepositoryFactory.swift in Sources */,
-				E5906E222D4992560078360E /* ApiServiceFactory.swift in Sources */,
+				E5906E302D4C1B120078360E /* NetworkModule.swift in Sources */,
+				E5906E1A2D497BE80078360E /* RepositoryModule.swift in Sources */,
 				E5906E012D456B190078360E /* UiState.swift in Sources */,
 				E5906E1E2D4987550078360E /* ApiService.swift in Sources */,
 				E5906E252D4992680078360E /* ClimaApiService.swift in Sources */,
 				ADAA27B3231BBFAF00365194 /* SceneDelegate.swift in Sources */,
-				E5906E162D497BB90078360E /* ViewControllerFactory.swift in Sources */,
-				E5906E2B2D49949A0078360E /* JsonParserFactory.swift in Sources */,
 				E5906E292D49939E0078360E /* ClimaJsonParser.swift in Sources */,
 				E5906DFF2D44444E0078360E /* ClimaRepository.swift in Sources */,
 				E5906E112D46D0710078360E /* UINavigationController+Extensions.swift in Sources */,
@@ -481,6 +482,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E5906E2C2D4C1A7B0078360E /* XCRemoteSwiftPackageReference "Factory" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hmlongco/Factory";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E5906E2D2D4C1A7B0078360E /* Factory */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E5906E2C2D4C1A7B0078360E /* XCRemoteSwiftPackageReference "Factory" */;
+			productName = Factory;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = ADAA27A5231BBFAF00365194 /* Project object */;
 }

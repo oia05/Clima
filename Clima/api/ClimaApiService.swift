@@ -7,13 +7,11 @@
 //
 
 import Foundation
+import Factory
 
 class ClimaApiService: ApiService {
-    private let jsonParser: JsonParser
-    
-    init(jsonParser: JsonParser) {
-        self.jsonParser = jsonParser
-    }
+    @Injected(\.jsonParser)
+    var jsonParser: JsonParser
     
     func performApi<T: Decodable>(endPoint: EndPoint, errorMapper: ErrorMapper) async throws -> T {
         do {

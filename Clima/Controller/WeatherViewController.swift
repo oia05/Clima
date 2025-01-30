@@ -9,20 +9,22 @@
 import UIKit
 import CoreLocation
 import Combine
+import Factory
 
 
 class WeatherViewController: UIViewController {
+    @Injected(\.weatherViewModel)
     private var weatherViewModel: WeatherViewModel
+    @Injected(\.locationManager)
     private var locationManager: CLLocationManager
     private var cancellables = Set<AnyCancellable>()
     private lazy var weatherView = WeatherView(frame: UIScreen.main.bounds)
     var coordinator: MainCoordinator?
-    
-    init(viewModel: WeatherViewModel, locationManager: CLLocationManager) {
-        self.weatherViewModel = viewModel
-        self.locationManager = locationManager
+
+    init() {
         super.init(nibName: nil, bundle: nil)
     }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

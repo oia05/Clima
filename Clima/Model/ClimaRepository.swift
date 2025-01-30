@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Factory
 
 
 protocol ClimaRepositoryProtocol {
@@ -16,11 +17,8 @@ protocol ClimaRepositoryProtocol {
 
 
 class ClimaRepository: ClimaRepositoryProtocol {
-    let apiService: ApiService
-    
-    init(apiService: ApiService) {
-        self.apiService = apiService
-    }
+    @Injected(\.apiService)
+    private var apiService: ApiService
     
     func fetchWeather(cityName: String) async throws -> WeatherModel {
         let data: WeatherData = try await apiService.performApi(endPoint: WeatherDataSource.getWeather(cityName: cityName), errorMapper: ClimaErrorMapper())

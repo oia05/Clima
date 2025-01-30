@@ -13,7 +13,7 @@ class MainCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     var onComplete: (() -> Void)?
     func start() {
-        let vc = ViewControllerFactory.getWeatherViewController()
+        let vc = WeatherViewController()
         vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)
     }

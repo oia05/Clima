@@ -8,12 +8,12 @@
 
 import Foundation
 import Combine
+import Factory
 
 class WeatherViewModel {
-    let repository: ClimaRepositoryProtocol!
-    init(repository: ClimaRepositoryProtocol) {
-        self.repository = repository
-    }
+    @Injected(\.WeatherRepository)
+    var repository: ClimaRepositoryProtocol
+
     private var _uiState: CurrentValueSubject = CurrentValueSubject<UiState, Never>( UiState(isLoading: true, weatherModel: nil))
     var uiState: AnyPublisher<UiState, Never> {
         _uiState.eraseToAnyPublisher()
